@@ -1,0 +1,3 @@
+[submodule "mysqlite"]
+	path = mysqlite
+	url = https://github.com/nelson9503-pymodules/mysqlite.git
