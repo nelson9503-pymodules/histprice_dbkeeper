@@ -72,10 +72,6 @@ class DBKeeper:
         if len(condition) > 0:
             condition = "WHERE " + condition
         query = self.tb.query("*", condition)
-        if len(query) == 0:
-            master = self.master.query()
-            if not symbol in master:
-                return False
         return query
 
     def query_master_info(self, symbol: str) -> dict:
