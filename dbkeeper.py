@@ -19,8 +19,11 @@ class DBKeeper:
         If skipUpdated is True, keeper will skip the symbol had been updated today.
         """
         # create table if not exists
-        if not symbol in self.master.query("table_name"):
-            self.__create_price_table(symbol)
+        if not symbol in self.mastertb:
+            # duoble check
+            self.mastertb = self.master.query()
+            if not symbol in self.mastertb:
+                self.__create_price_table(symbol)
         self.tb = self.db.TB(symbol)
         # skip if updated
         today = self.__get_today()
