@@ -41,6 +41,9 @@ class DBKeeper:
         last_date = self.config[symbol]["last_date"]
         for date in data:
             if date > last_date:
+                check = self.__check_day_null(data[date])
+                if check == False:
+                    continue
                 updates[date] = data[date]
         self.tb.update(updates)
         # update lastupdate
@@ -182,3 +185,16 @@ class DBKeeper:
         self.config[symbol]["data_points"] = len(dates)
 
         self.tb.update(updates)
+    
+    def __check_day_null(self, day_price: dict) -> bool:
+        """
+        If the day data is all Null, we don't record it into database.
+        """
+        if day_price["open"] == None and \
+                day_price["high"] == None and \
+                day_price["low"] == None and \
+                day_price["close"] == None and \
+                day_price["adjclose"] == None:
+            return False
+        else:
+            return True
