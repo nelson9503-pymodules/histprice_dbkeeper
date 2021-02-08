@@ -45,9 +45,10 @@ class DBKeeper:
         self.tb.update(updates)
         # update lastupdate
         self.config[symbol]["last_update"] = today
-        if self.config[symbol]["first_date"] == 0:
+        if self.config[symbol]["first_date"] == 0 and len(data) > 0:
             self.config[symbol]["first_date"] = min(list(data.keys()))
-        self.config[symbol]["last_date"] = max(list(data.keys()))
+        if len(data) > 0:
+            self.config[symbol]["last_date"] = max(list(data.keys()))
         if self.config[symbol]["data_points"] == 0:
             self.config[symbol]["data_points"] = len(data)
         else:
@@ -148,7 +149,10 @@ class DBKeeper:
             2. sync the data values for dates that both exist in database and input data;
         """
         dbdata = self.tb.query("date")
-        mindate = min(list(data.keys()))
+        if len(data) > 0:
+            mindate = min(list(data.keys()))
+        else:
+            mindate = 0
 
         # remove dates that smaller than the first date from input data
         del_dates = []
@@ -170,8 +174,10 @@ class DBKeeper:
                 self.tb.dropData(date)
 
         # config
-        self.config[symbol]["first_date"] = min(list(dbdata.keys()))
-        self.config[symbol]["last_date"] = max(list(dbdata.keys()))
+        if len(dbdata) > 0:
+            self.config[symbol]["first_date"] = min(list(dbdata.keys()))
+        if len(dbdata) > 0:
+            self.config[symbol]["last_date"] = max(list(dbdata.keys()))
         dates = self.tb.query("date")
         self.config[symbol]["data_points"] = len(dates)
 
